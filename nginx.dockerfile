@@ -1,5 +1,6 @@
 ARG NGINX_VERSION=1.29
 ARG ALPINE_VERSION=3.22
+ARG PROJECT_PATH
 
 FROM nginx:${NGINX_VERSION}-alpine${ALPINE_VERSION} AS base
 
@@ -16,3 +17,15 @@ COPY configs/nginx/default.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
+
+# production stage - with static assets baked in
+FROM base AS production
+ARG PROJECT_PATH
+
+# copy static assets from Laravel public directory
+COPY --chown=www-data:www-data ${PROJECT_PATH}/public /application/public
+
+# development stage - expects volume mount (default)
+FROM base AS development
+
+# no static copy - static files will be mounted via volume

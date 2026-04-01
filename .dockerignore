@@ -1,3 +1,11 @@
 .git
 .idea
-project
+project/.git
+project/.github
+project/.editorconfig
+project/.gitattributes
+project/.gitignore
+project/README.md
+project/LICENSE
+project/.env
+project/.env.*

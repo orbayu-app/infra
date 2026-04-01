@@ -1,0 +1,47 @@
+services:
+  nginx:
+    # noinspection ComposeUnknownValues
+    image: ${COMPOSE_PROJECT_NAME}-nginx:${BUILD_NUMBER:?BUILD_NUMBER required}
+    container_name: ${COMPOSE_PROJECT_NAME}-nginx
+    build:
+      context: ./
+      dockerfile: nginx.dockerfile
+      target: production
+      args:
+        PROJECT_PATH: ./project
+    depends_on:
+      - php
+    networks:
+      - external
+      - internal
+    restart: unless-stopped
+
+  php:
+    # noinspection ComposeUnknownValues
+    image: ${COMPOSE_PROJECT_NAME}-php:${BUILD_NUMBER:?BUILD_NUMBER required}
+    container_name: ${COMPOSE_PROJECT_NAME}-php
+    build:
+      context: ./
+      dockerfile: php.dockerfile
+      target: production
+      args:
+        PROJECT_PATH: ./project
+    environment:
+      - APP_NAME=Orbayu
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - LOG_CHANNEL=stderr
+      - LOG_LEVEL=warning
+      - APP_KEY
+      - APP_URL
+    networks:
+      - internal
+    restart: unless-stopped
+
+networks:
+  external:
+    external: true
+    name: ${EXTERNAL_NETWORK:-docker_external}
+
+  internal:
+    driver: bridge
