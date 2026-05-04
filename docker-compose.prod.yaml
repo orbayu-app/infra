@@ -30,6 +30,7 @@ services:
       - APP_NAME=Orbayu
       - APP_ENV=production
       - APP_DEBUG=false
+      - APP_COMMIT_HASH=${BUILD_NUMBER}
       - LOG_CHANNEL=stderr
       - LOG_LEVEL=warning
       - APP_KEY
